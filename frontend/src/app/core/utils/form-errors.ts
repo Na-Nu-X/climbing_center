@@ -8,8 +8,9 @@ export function controlErrorMessage(control: AbstractControl | null): string | n
   if (!control || !control.errors || !(control.touched || control.dirty)) return null;
   const e = control.errors;
   if (e['server']) return e['server'] as string;
+  // Validators.requiredTrue reports `required` – for checkboxes show a consent message.
+  if (e['required'] && control.value === false) return 'Na odoslanie je potrebný váš súhlas.';
   if (e['required']) return 'Toto pole je povinné.';
-  if (e['requiredTrue']) return 'Na odoslanie je potrebný váš súhlas.';
   if (e['email']) return 'Zadajte platnú e-mailovú adresu.';
   if (e['minlength']) return `Zadajte aspoň ${e['minlength'].requiredLength} znaky.`;
   if (e['maxlength']) return `Maximálne ${e['maxlength'].requiredLength} znakov.`;

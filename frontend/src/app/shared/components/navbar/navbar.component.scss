@@ -229,7 +229,7 @@
       transform $duration-base $ease-out calc(var(--i) * 40ms + 80ms);
   }
 
-  a {
+  nav a {
     display: flex;
     align-items: baseline;
     gap: $space-4;
