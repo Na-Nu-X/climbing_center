@@ -1,0 +1,134 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.course-card {
+  @include card;
+  @include zoom-trigger;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    border-color $duration-base ease,
+    box-shadow $duration-base ease,
+    transform $duration-base $ease-out;
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-3px);
+  }
+
+  &__media {
+    @include zoom-media(16, 10);
+    display: block;
+  }
+
+  &__category {
+    position: absolute;
+    top: $space-3;
+    left: $space-3;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    padding: $space-5;
+  }
+
+  &__level {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    background: var(--color-limestone);
+    color: var(--color-text);
+
+    &.is-beginner {
+      background: var(--color-success-tint);
+      color: var(--color-success);
+    }
+  }
+
+  &__title {
+    font-size: 1.22rem;
+    line-height: 1.22;
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        color: var(--color-accent);
+      }
+    }
+  }
+
+  &__desc {
+    font-size: 0.93rem;
+    color: var(--color-text-muted);
+  }
+
+  &__meta {
+    display: grid;
+    gap: $space-2;
+    margin: 0;
+    padding-top: $space-3;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.86rem;
+
+    div {
+      display: flex;
+      gap: $space-2;
+      align-items: flex-start;
+    }
+
+    dt {
+      color: var(--color-accent);
+      margin-top: 2px;
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: $space-3;
+    padding-top: $space-3;
+  }
+
+  &__price {
+    display: grid;
+
+    .price {
+      font-size: 1.45rem;
+    }
+  }
+
+  &__price-label {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__link {
+    align-self: flex-start;
+    margin-top: $space-2;
+  }
+}

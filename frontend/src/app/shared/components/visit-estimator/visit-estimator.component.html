@@ -1,0 +1,173 @@
+<div class="estimator">
+  <div class="estimator__config">
+    <!-- Step 1: climbers -->
+    <fieldset class="step">
+      <legend class="step__title"><span class="step__num num">01</span> Počet lezcov</legend>
+      <div class="counters">
+        @for (c of counters; track c.key) {
+          <div class="counter">
+            <div class="counter__label">
+              <span [id]="idPrefix() + '-' + c.key">{{ c.label }}</span>
+              <small>{{ c.hint }}</small>
+            </div>
+            <div class="counter__control" role="group" [attr.aria-labelledby]="idPrefix() + '-' + c.key">
+              <button
+                type="button"
+                class="counter__btn"
+                (click)="change(c.key, -1)"
+                [disabled]="!canDecrement(c.key)"
+                [attr.aria-label]="'Ubrať – ' + c.label"
+              >
+                <app-icon name="minus" [size]="18" />
+              </button>
+              <output class="counter__value num" aria-live="polite">{{ count(c.key) }}</output>
+              <button
+                type="button"
+                class="counter__btn"
+                (click)="change(c.key, 1)"
+                [disabled]="count(c.key) >= maxPerGroup"
+                [attr.aria-label]="'Pridať – ' + c.label"
+              >
+                <app-icon name="plus" [size]="18" />
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <!-- Step 2: activity & rental -->
+    <fieldset class="step">
+      <legend class="step__title">
+        <span class="step__num num">02</span> Čo idete liezť &amp; Požičovňa výstroja
+      </legend>
+      <div class="options" role="radiogroup">
+        @for (a of activities; track a.value) {
+          <label class="option" [class.is-selected]="activity() === a.value">
+            <input
+              type="radio"
+              [name]="idPrefix() + '-activity'"
+              [value]="a.value"
+              [checked]="activity() === a.value"
+              (change)="selectActivity(a.value)"
+            />
+            <span class="option__icon"><app-icon [name]="a.icon" [size]="22" /></span>
+            <span class="option__text">
+              <strong>{{ a.label }}</strong>
+              <small>{{ a.hint }}</small>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <!-- Step 3: instructor -->
+    <fieldset class="step">
+      <legend class="step__title">
+        <span class="step__num num">03</span> Chcete asistenciu inštruktora?
+      </legend>
+      <div class="toggle" role="radiogroup">
+        <label class="toggle__opt" [class.is-selected]="!withInstructor()">
+          <input
+            type="radio"
+            [name]="idPrefix() + '-instructor'"
+            [checked]="!withInstructor()"
+            (change)="setInstructor(false)"
+          />
+          Prídem liezť samostatne
+        </label>
+        <label class="toggle__opt" [class.is-selected]="withInstructor()">
+          <input
+            type="radio"
+            [name]="idPrefix() + '-instructor'"
+            [checked]="withInstructor()"
+            (change)="setInstructor(true)"
+          />
+          Chcem úvodnú hodinu s inštruktorom
+        </label>
+      </div>
+      @if (withInstructor()) {
+        <p class="step__note step__note--success">
+          <app-icon name="shield" [size]="18" />
+          90 minút s certifikovaným inštruktorom. Vstup na celý deň a kompletná výstroj sú už v cene kurzu.
+        </p>
+      } @else if (ropeSafetyNote()) {
+        <p class="step__note">
+          <app-icon name="info" [size]="18" />
+          Na lezenie s lanom bez inštruktora potrebujete vedieť istiť (preukaz ističa). Bez neho môžete využiť
+          naše samoistiace navijaky (auto-belay).
+        </p>
+      }
+    </fieldset>
+  </div>
+
+  <!-- Summary -->
+  <aside class="summary" aria-label="Odhad ceny návštevy">
+    <p class="summary__eyebrow">Odhad ceny návštevy</p>
+
+    <ul class="summary__lines" role="list">
+      @for (l of estimate().lines; track l.label) {
+        <li>
+          <span class="summary__line-label"
+            >{{ l.label }} <span class="num muted">× {{ l.quantity }}</span></span
+          >
+          <span class="num">{{ l.total | eur }}</span>
+        </li>
+      }
+    </ul>
+
+    <div class="summary__total" aria-live="polite">
+      <span>Spolu · počet lezcov: <span class="num">{{ estimate().climbers }}</span></span>
+      <strong class="num">{{ estimate().total | eur }}</strong>
+    </div>
+    @if (estimate().familyTicketsApplied > 0) {
+      <p class="summary__hint">Automaticky sme započítali výhodnejší rodinný vstup.</p>
+    }
+
+    @if (estimate().passSavingPerAdult > 0 && !withInstructor()) {
+      <div class="summary__saving">
+        <app-icon name="star" [size]="18" />
+        <p>
+          Budete chodiť pravidelne? S <strong>permanentkou na 10 vstupov</strong> zaplatíte iba
+          <span class="num">{{ estimate().passPricePerVisit | eur }}</span> za vstup a ušetríte
+          <strong class="num">{{ estimate().passSavingPerAdult | eur: true }}</strong> na každého dospelého.
+        </p>
+      </div>
+    } @else if (withInstructor()) {
+      <div class="summary__saving">
+        <app-icon name="star" [size]="18" />
+        <p>
+          Po úvodnom kurze môžete liezť samostatne – s permanentkou na 10 vstupov za
+          <span class="num">{{ prices().pass_10 | eur: true }}</span>.
+        </p>
+      </div>
+    }
+
+    <div class="summary__bring">
+      <p class="summary__bring-title">Čo si priniesť so sebou</p>
+      <ul class="summary__checklist" role="list">
+        @for (item of checklist(); track item) {
+          <li><app-icon name="check" [size]="16" />{{ item }}</li>
+        }
+      </ul>
+    </div>
+
+    <div class="summary__actions">
+      @if (withInstructor()) {
+        <a class="btn btn--primary btn--block" [routerLink]="['/kurzy', introCourseSlug]" fragment="prihlaska">
+          Rezervovať úvodný kurz <span class="arrow">→</span>
+        </a>
+      } @else {
+        <a class="btn btn--primary btn--block" routerLink="/prva-navsteva-a-kontakt">
+          Ako prebieha prvá návšteva <span class="arrow">→</span>
+        </a>
+      }
+      @if (showPricingLink()) {
+        <a class="summary__link" routerLink="/cennik">Zobraziť celý cenník</a>
+      }
+    </div>
+    <p class="summary__disclaimer">
+      Orientačná cena podľa aktuálneho cenníka. Platba kartou aj v hotovosti na recepcii.
+    </p>
+  </aside>
+</div>

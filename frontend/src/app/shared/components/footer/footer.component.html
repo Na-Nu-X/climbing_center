@@ -1,0 +1,102 @@
+<footer class="footer">
+  <div class="footer__cta">
+    <div class="container footer__cta-inner">
+      <div>
+        <p class="eyebrow">Prvý krok je najťažší</p>
+        <h2 class="footer__cta-title">Príď to skúsiť. My ťa naučíme zvyšok.</h2>
+      </div>
+      <div class="footer__cta-actions">
+        <a class="btn btn--primary" routerLink="/prva-navsteva-a-kontakt"
+          >Ako prebieha prvá návšteva <span class="arrow">→</span></a
+        >
+        <a class="btn btn--ghost-light" routerLink="/kurzy">Kurzy pre začiatočníkov</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer__grid">
+    <section class="footer__brand" aria-label="O centre">
+      <a class="footer__wordmark" routerLink="/">
+        {{ site.wordmark.primary }}<span>{{ site.wordmark.secondary }}</span>
+      </a>
+      <p class="footer__tagline">{{ site.tagline }}</p>
+      <ul class="footer__social" role="list">
+        @for (social of site.social; track social.url) {
+          <li>
+            <a [href]="social.url" target="_blank" rel="noopener noreferrer" [attr.aria-label]="social.label">
+              <app-icon [name]="social.icon" [size]="20" />
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="footer-visit">
+      <h3 id="footer-visit" class="footer__heading">Kde nás nájdeš</h3>
+      <address class="footer__list">
+        <span class="footer__row">
+          <app-icon name="pin" [size]="18" />
+          <span
+            >{{ site.address.street }}<br />{{ site.address.postalCode }} {{ site.address.city }}</span
+          >
+        </span>
+        <span class="footer__row"><app-icon name="parking" [size]="18" />{{ site.address.parking }}</span>
+        <span class="footer__row"><app-icon name="tram" [size]="18" />{{ site.address.publicTransit }}</span>
+      </address>
+    </section>
+
+    <section aria-labelledby="footer-hours">
+      <h3 id="footer-hours" class="footer__heading">Otváracie hodiny</h3>
+      <dl class="footer__hours">
+        @for (row of site.openingHours; track row.days) {
+          <div>
+            <dt>{{ row.days }}</dt>
+            <dd class="num">{{ row.hours }}</dd>
+          </div>
+        }
+      </dl>
+      <div class="footer__list footer__contact">
+        <a class="footer__row" [href]="site.contact.phoneHref"
+          ><app-icon name="phone" [size]="18" /><span class="num">{{ site.contact.phone }}</span></a
+        >
+        <a class="footer__row" [href]="'mailto:' + site.contact.email"
+          ><app-icon name="mail" [size]="18" />{{ site.contact.email }}</a
+        >
+      </div>
+    </section>
+
+    <nav aria-labelledby="footer-links">
+      <h3 id="footer-links" class="footer__heading">Rýchle odkazy</h3>
+      <ul class="footer__links" role="list">
+        @for (link of quickLinks; track link.path) {
+          <li>
+            <a [routerLink]="link.path">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="container footer__notices">
+    <p class="footer__safety">
+      <app-icon name="shield" [size]="18" />
+      <span
+        ><strong>Bezpečnosť na prvom mieste.</strong> Lezenie je rizikový šport. Pred prvým vstupom je
+        potrebné vyplniť a podpísať prehlásenie o zdravotnej spôsobilosti a znalosti prevádzkového poriadku. Za
+        osoby mladšie ako 18 rokov podpisuje prehlásenie zákonný zástupca.</span
+      >
+    </p>
+    <p class="footer__gdpr">
+      Osobné údaje z formulárov spracúvame výhradne na vybavenie vašej prihlášky alebo dopytu v súlade s nariadením
+      GDPR (EÚ) 2016/679. Prevádzkovateľ: {{ site.legalName }}.
+    </p>
+  </div>
+
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <span>© {{ year }} {{ site.legalName }}</span>
+      <span class="num">IČO: {{ site.company.ico }} · DIČ: {{ site.company.dic }}</span>
+      <span class="footer__registry">{{ site.company.registry }}</span>
+    </div>
+  </div>
+</footer>
