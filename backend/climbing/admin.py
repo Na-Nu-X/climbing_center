@@ -60,7 +60,7 @@ class ClimbingZoneAdmin(admin.ModelAdmin):
 
 @admin.register(PricingPass)
 class PricingPassAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "price_eur", "subtitle_note", "is_popular", "display_order")
+    list_display = ("title", "category", "price_eur", "subtitle_note", "is_popular", "estimator_key", "display_order")
     list_editable = ("price_eur", "is_popular", "display_order")
     list_filter = ("category", "is_popular")
     search_fields = ("title", "subtitle_note")

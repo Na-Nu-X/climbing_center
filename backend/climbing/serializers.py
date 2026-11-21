@@ -62,6 +62,7 @@ class PricingPassSerializer(serializers.ModelSerializer):
             "subtitle_note",
             "price_eur",
             "is_popular",
+            "estimator_key",
             "display_order",
         ]
 

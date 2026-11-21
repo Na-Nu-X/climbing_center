@@ -57,6 +57,15 @@ class PricingPass(models.Model):
         PASSES = "permanentky", "Permanentky a členstvá"
         RENTAL = "pozicovna", "Požičovňa lezeckého vybavenia"
 
+    class EstimatorKey(models.TextChoices):
+        ADULT = "adult_entry", "Kalkulačka: vstup dospelý"
+        STUDENT = "student_entry", "Kalkulačka: vstup študent / junior"
+        CHILD = "child_entry", "Kalkulačka: vstup dieťa"
+        FAMILY = "family_entry", "Kalkulačka: rodinný vstup"
+        PASS_10 = "pass_10", "Kalkulačka: permanentka 10 vstupov"
+        SHOES = "shoes_rental", "Kalkulačka: požičanie lezečiek"
+        ROPE_SET = "rope_set_rental", "Kalkulačka: kompletný set na lano"
+
     category = models.CharField("Kategória", max_length=20, choices=Category.choices)
     title = models.CharField("Názov položky", max_length=160)
     subtitle_note = models.CharField("Poznámka", max_length=200, blank=True)
@@ -64,6 +73,15 @@ class PricingPass(models.Model):
         "Cena (€)", max_digits=7, decimal_places=2, validators=[MinValueValidator(0)]
     )
     is_popular = models.BooleanField("Najobľúbenejšie", default=False)
+    estimator_key = models.CharField(
+        "Použitie v kalkulačke návštevy",
+        max_length=20,
+        choices=EstimatorKey.choices,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Priraďte, ak má kalkulačka na webe počítať s cenou tejto položky.",
+    )
     display_order = models.PositiveSmallIntegerField("Poradie zobrazenia", default=0)
 
     class Meta:

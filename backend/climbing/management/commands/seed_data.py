@@ -119,6 +119,17 @@ PRICING = [
     ("pozicovna", "Kompletný set na lano (lezečky + úväz + istítko)", "Všetko, čo potrebuješ na lezenie s lanom", "8.00", False, 4),
 ]
 
+# Links pricing items to the visit estimator on the website.
+ESTIMATOR_KEYS = {
+    "Jednorazový vstup – Dospelý": "adult_entry",
+    "Jednorazový vstup – Študent / Junior (do 26 r.)": "student_entry",
+    "Detský vstup (do 14 rokov)": "child_entry",
+    "Rodinný vstup (2 dospelí + 2 deti)": "family_entry",
+    "Permanentka 10 vstupov": "pass_10",
+    "Požičanie lezečiek": "shoes_rental",
+    "Kompletný set na lano (lezečky + úväz + istítko)": "rope_set_rental",
+}
+
 COURSES = [
     {
         "slug": "prve-kroky-na-stene",
@@ -390,6 +401,7 @@ class Command(BaseCommand):
                     "subtitle_note": note,
                     "price_eur": Decimal(price),
                     "is_popular": popular,
+                    "estimator_key": ESTIMATOR_KEYS.get(title),
                     "display_order": order,
                 },
             )
