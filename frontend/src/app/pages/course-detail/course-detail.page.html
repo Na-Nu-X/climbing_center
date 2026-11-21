@@ -1,0 +1,308 @@
+@if (data(); as c) {
+  <section class="dossier-hero">
+    <div class="dossier-hero__media" aria-hidden="true">
+      @if (c.image_url) {
+        <img [src]="c.image_url" alt="" width="1600" height="1000" />
+      }
+    </div>
+    <div class="container dossier-hero__inner">
+      <nav class="breadcrumbs" aria-label="Omrvinková navigácia">
+        <a routerLink="/">Domov</a><span aria-hidden="true">/</span> <a routerLink="/kurzy">Kurzy</a
+        ><span aria-hidden="true">/</span>
+        <span aria-current="page">{{ categoryLabel() }}</span>
+      </nav>
+      <div class="dossier-hero__badges">
+        <span class="badge badge--accent">{{ c.category_label }}</span>
+        <span class="badge" [class.badge--success]="c.skill_level === 'uplny_zaciatocnik'">{{ skillPill() }}</span>
+      </div>
+      <h1 class="dossier-hero__title">{{ c.title }}</h1>
+      <p class="dossier-hero__lead">{{ c.short_description }}</p>
+      <dl class="dossier-hero__facts">
+        <div>
+          <dt>Trvanie</dt>
+          <dd class="num">{{ c.duration_label }}</dd>
+        </div>
+        <div>
+          <dt>Cena</dt>
+          <dd class="num">{{ c.price_eur | eur: true }}</dd>
+        </div>
+        <div>
+          <dt>Výstroj</dt>
+          <dd>{{ c.includes_equipment ? 'V cene kurzu' : 'Vlastná / požičovňa' }}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <div class="container dossier">
+    <article class="dossier__content">
+      <section class="block" aria-labelledby="for-whom">
+        <p class="block__num num">01</p>
+        <div>
+          <h2 id="for-whom" class="h3">Pre koho je kurz určený</h2>
+          <p>{{ c.target_audience || c.skill_level_label }}</p>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="about">
+        <p class="block__num num">02</p>
+        <div>
+          <h2 id="about" class="h3">Ako kurz prebieha</h2>
+          <p>{{ c.detailed_description }}</p>
+        </div>
+      </section>
+
+      @if (c.what_you_will_learn.length) {
+        <section class="block" aria-labelledby="learn">
+          <p class="block__num num">03</p>
+          <div>
+            <h2 id="learn" class="h3">Čo sa na kurze naučíte</h2>
+            <ul class="check-list">
+              @for (item of c.what_you_will_learn; track item) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          </div>
+        </section>
+      }
+
+      <section class="block" aria-labelledby="included">
+        <p class="block__num num">04</p>
+        <div>
+          <h2 id="included" class="h3">Čo je v cene kurzu</h2>
+          <ul class="check-list">
+            @for (item of included(); track item) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="dates">
+        <p class="block__num num">05</p>
+        <div>
+          <h2 id="dates" class="h3">Termíny</h2>
+          <div class="schedule">
+            <div class="schedule__item">
+              <app-icon name="calendar" [size]="22" />
+              <div>
+                <span class="schedule__label">Kedy</span>
+                <strong>{{ c.schedule_info }}</strong>
+              </div>
+            </div>
+            <div class="schedule__item">
+              <app-icon name="clock" [size]="22" />
+              <div>
+                <span class="schedule__label">Rozsah</span>
+                <strong class="num">{{ c.duration_label }}</strong>
+              </div>
+            </div>
+          </div>
+          <p class="muted small">
+            Presný termín a skupinu potvrdíme e-mailom do 24 hodín od prijatia prihlášky.
+          </p>
+        </div>
+      </section>
+    </article>
+
+    <!-- Registration -->
+    <aside class="dossier__aside">
+      <div class="register" id="prihlaska">
+        <div class="register__head">
+          <p class="eyebrow">Online prihláška na kurz</p>
+          <p class="register__price">
+            <span class="num">{{ c.price_eur | eur }}</span>
+            <small>{{ c.includes_equipment ? 'vrátane výstroja' : 'bez výstroja' }}</small>
+          </p>
+        </div>
+
+        @if (submitted()) {
+          <div class="alert alert--success" role="status">
+            <strong>Ďakujeme, prihláška je odoslaná!</strong>
+            <p>
+              Prihlášku pre <strong>{{ submittedName() }}</strong> sme prijali. Do 24 hodín vám e-mailom potvrdíme
+              termín a pošleme pokyny k platbe.
+            </p>
+          </div>
+          <button type="button" class="btn btn--outline btn--block" (click)="registerAnother()">
+            Prihlásiť ďalšieho účastníka
+          </button>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="register__form">
+            <div class="field">
+              <label for="r-name">{{ isKids() ? 'Meno a priezvisko dieťaťa' : 'Meno a priezvisko účastníka' }} <span class="req">*</span></label>
+              <input
+                id="r-name"
+                formControlName="participant_name"
+                autocomplete="name"
+                [class.is-invalid]="error('participant_name')"
+                [attr.aria-invalid]="!!error('participant_name')"
+                aria-describedby="r-name-err"
+              />
+              @if (error('participant_name'); as e) {
+                <span class="field__error" id="r-name-err">{{ e }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label for="r-age">Vek účastníka @if (isKids()) {<span class="req">*</span>}</label>
+              <input
+                id="r-age"
+                type="number"
+                inputmode="numeric"
+                min="3"
+                max="99"
+                formControlName="participant_age"
+                [class.is-invalid]="error('participant_age')"
+                [attr.aria-invalid]="!!error('participant_age')"
+              />
+              @if (error('participant_age'); as e) {
+                <span class="field__error">{{ e }}</span>
+              }
+            </div>
+
+            <fieldset class="field radios">
+              <legend class="field__label">Skúsenosti s lezením</legend>
+              @for (o of experienceOptions; track o.value) {
+                <label class="radio">
+                  <input type="radio" formControlName="experience_level" [value]="o.value" />
+                  <span>{{ o.label }}</span>
+                </label>
+              }
+            </fieldset>
+
+            <div class="field">
+              <label for="r-schedule">Preferovaný termín</label>
+              <input
+                id="r-schedule"
+                formControlName="preferred_schedule_note"
+                [placeholder]="'Napr. ' + c.schedule_info.split(' alebo ')[0]"
+              />
+            </div>
+
+            @if (!isKids()) {
+              <label class="checkbox">
+                <input type="checkbox" formControlName="is_self" />
+                <span>Prihlasujem seba (som zároveň kontaktná osoba)</span>
+              </label>
+            }
+
+            @if (showContactName()) {
+              <div class="field">
+                <label for="r-contact"
+                  >{{ isKids() ? 'Meno rodiča / zákonného zástupcu' : 'Kontaktná osoba' }} <span class="req">*</span></label
+                >
+                <input
+                  id="r-contact"
+                  formControlName="contact_name"
+                  autocomplete="name"
+                  [class.is-invalid]="error('contact_name')"
+                  [attr.aria-invalid]="!!error('contact_name')"
+                />
+                @if (error('contact_name'); as e) {
+                  <span class="field__error">{{ e }}</span>
+                }
+              </div>
+            }
+
+            <div class="field">
+              <label for="r-email">E-mail <span class="req">*</span></label>
+              <input
+                id="r-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                [class.is-invalid]="error('email')"
+                [attr.aria-invalid]="!!error('email')"
+              />
+              @if (error('email'); as e) {
+                <span class="field__error">{{ e }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label for="r-phone">Telefón <span class="req">*</span></label>
+              <input
+                id="r-phone"
+                type="tel"
+                formControlName="phone"
+                autocomplete="tel"
+                placeholder="+421 900 123 456"
+                [class.is-invalid]="error('phone')"
+                [attr.aria-invalid]="!!error('phone')"
+              />
+              @if (error('phone'); as e) {
+                <span class="field__error">{{ e }}</span>
+              }
+            </div>
+
+            <div class="field">
+              <label for="r-notes">Poznámka</label>
+              <textarea
+                id="r-notes"
+                formControlName="notes"
+                rows="3"
+                placeholder="Zdravotné obmedzenia, otázky, veľkosť lezečiek…"
+              ></textarea>
+            </div>
+
+            <label class="checkbox">
+              <input type="checkbox" formControlName="gdpr_consent" />
+              <span
+                >Súhlasím so spracovaním osobných údajov na účely vybavenia prihlášky. <span class="req">*</span></span
+              >
+            </label>
+            @if (error('gdpr_consent'); as e) {
+              <span class="field__error">{{ e }}</span>
+            }
+
+            @if (submitError(); as msg) {
+              <div class="alert alert--error" role="alert">{{ msg }}</div>
+            }
+
+            <button type="submit" class="btn btn--primary btn--block" [disabled]="submitting()">
+              {{ submitting() ? 'Odosielame…' : 'Odoslať prihlášku' }}
+              @if (!submitting()) {
+                <span class="arrow">→</span>
+              }
+            </button>
+            <p class="register__note">Platba až po potvrdení termínu. Prihlášku môžete bezplatne zrušiť.</p>
+          </form>
+        }
+      </div>
+
+      <div class="help-card">
+        <app-icon name="phone" [size]="20" />
+        <div>
+          <strong>Radšej telefonicky?</strong>
+          <a [href]="site.contact.phoneHref" class="num">{{ site.contact.phone }}</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+} @else if (notFound()) {
+  <section class="section">
+    <div class="container empty">
+      <p class="eyebrow">Chyba 404</p>
+      <h1 class="h2">Tento kurz sme nenašli</h1>
+      <p class="lead">Kurz mohol byť ukončený alebo presunutý. Pozrite si aktuálnu ponuku kurzov a krúžkov.</p>
+      <a class="btn btn--primary" routerLink="/kurzy">Všetky kurzy <span class="arrow">→</span></a>
+    </div>
+  </section>
+} @else if (course.error()) {
+  <section class="section">
+    <div class="container empty">
+      <h1 class="h2">Kurz sa nepodarilo načítať</h1>
+      <p class="lead">Server je dočasne nedostupný. Skúste to prosím o chvíľu.</p>
+      <button type="button" class="btn btn--outline" (click)="course.reload()">Skúsiť znova</button>
+    </div>
+  </section>
+} @else {
+  <div class="dossier-loading" aria-busy="true" aria-label="Načítavame kurz">
+    <div class="skeleton dossier-loading__hero"></div>
+    <div class="container dossier">
+      <div class="skeleton" style="height: 480px"></div>
+      <div class="skeleton" style="height: 480px"></div>
+    </div>
+  </div>
+}

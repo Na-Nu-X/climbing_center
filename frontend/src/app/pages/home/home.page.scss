@@ -1,0 +1,318 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.stack {
+  display: grid;
+  gap: $space-4;
+}
+
+// ---------------------------------------------------------------- Hero
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(88vh, 820px);
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-dark);
+  color: var(--color-on-dark);
+  overflow: hidden;
+
+  &__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 62% center;
+      animation: hero-zoom 14s $ease-out both;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(20, 23, 28, 0.96) 0%, rgba(20, 23, 28, 0.55) 45%, rgba(20, 23, 28, 0.25) 100%),
+        linear-gradient(to right, rgba(20, 23, 28, 0.75) 0%, transparent 65%);
+    }
+  }
+
+  &__inner {
+    display: grid;
+    gap: $space-7;
+    padding-block: $space-9 $space-6;
+  }
+
+  &__content {
+    display: grid;
+    gap: $space-5;
+    max-width: 780px;
+    animation: rise $duration-slow $ease-out both;
+  }
+
+  &__eyebrow {
+    color: var(--color-accent);
+  }
+
+  &__title {
+    font-size: clamp(2.6rem, 6.5vw + 0.4rem, 5.4rem);
+
+    span {
+      color: var(--color-accent);
+    }
+  }
+
+  &__lead {
+    font-size: clamp(1.05rem, 0.5vw + 1rem, 1.25rem);
+    color: rgba(249, 248, 246, 0.82);
+    max-width: 56ch;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+    margin-top: $space-2;
+
+    .btn {
+      @include mq-down(sm) {
+        width: 100%;
+      }
+    }
+  }
+
+  &__highlights {
+    display: grid;
+    border-top: 1px solid rgba(249, 248, 246, 0.2);
+    animation: rise $duration-slow $ease-out 150ms both;
+
+    @include mq(md) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    li {
+      display: grid;
+      gap: 2px;
+      padding: $space-4 0;
+      border-bottom: 1px solid rgba(249, 248, 246, 0.12);
+
+      @include mq(md) {
+        padding: $space-5 $space-5 $space-2 0;
+        border-bottom: 0;
+
+        & + li {
+          padding-left: $space-5;
+          border-left: 1px solid rgba(249, 248, 246, 0.16);
+        }
+      }
+    }
+
+    strong {
+      font-size: clamp(1.4rem, 1.4vw + 1rem, 2rem);
+      font-weight: 600;
+      color: var(--color-on-dark);
+    }
+
+    span {
+      color: var(--color-on-dark-muted);
+      font-size: 0.92rem;
+    }
+  }
+}
+
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ---------------------------------------------------------------- Ticker
+.ticker {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 0.9rem;
+
+  &__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2 $space-5;
+    padding-block: $space-3;
+  }
+
+  &__live {
+    @include eyebrow;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-2;
+    font-weight: 600;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  &__grade {
+    margin-left: auto;
+    font-weight: 600;
+
+    @include mq-down(md) {
+      display: none;
+    }
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// ---------------------------------------------------------------- Zones
+.zones-grid {
+  display: grid;
+  gap: $space-5;
+
+  @include mq(md) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+
+    app-zone-card {
+      grid-column: span 2;
+    }
+
+    app-zone-card:nth-child(-n + 2) {
+      grid-column: span 3;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Pillars
+.pillars {
+  display: grid;
+  gap: 1px;
+  background: rgba(249, 248, 246, 0.12);
+  border: 1px solid rgba(249, 248, 246, 0.12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  @include mq(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mq(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.pillar {
+  position: relative;
+  display: grid;
+  gap: $space-3;
+  align-content: start;
+  padding: $space-6;
+  background: var(--color-dark);
+  transition: background $duration-base ease;
+
+  &:hover {
+    background: var(--color-dark-raised);
+  }
+
+  &__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  &__index {
+    position: absolute;
+    top: $space-6;
+    right: $space-6;
+    font-size: 0.8rem;
+    color: var(--color-on-dark-muted);
+  }
+
+  &__title {
+    font-size: 1.15rem;
+    margin-top: $space-2;
+  }
+
+  &__text {
+    font-size: 0.93rem;
+    color: var(--color-on-dark-muted);
+  }
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: $space-5;
+  margin-top: $space-7;
+
+  @include mq(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  li {
+    display: grid;
+    gap: $space-1;
+    padding-top: $space-4;
+    border-top: 2px solid var(--color-accent);
+  }
+
+  strong {
+    font-size: clamp(1.6rem, 2vw + 1rem, 2.4rem);
+    font-weight: 600;
+  }
+
+  span {
+    font-size: 0.88rem;
+    color: var(--color-on-dark-muted);
+  }
+}
+
+// ---------------------------------------------------------------- Groups teaser
+.groups {
+  display: grid;
+  gap: $space-6;
+
+  @include mq(lg) {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  &__text {
+    display: grid;
+    gap: $space-4;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+  }
+}

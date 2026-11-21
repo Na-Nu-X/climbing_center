@@ -1,0 +1,174 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <img [src]="site.heroImageUrl" alt="" fetchpriority="high" width="2000" height="1333" />
+  </div>
+  <div class="container hero__inner">
+    <div class="hero__content">
+      <p class="eyebrow hero__eyebrow">Bouldering · Lano · Kurzy · Deti</p>
+      <h1 class="hero__title">Lezenie pre každého. <span>Od prvého chytu</span> po prvý previs.</h1>
+      <p class="hero__lead">{{ site.tagline }} Príď bez skúseností – výstroj ti požičiame a inštruktori ti ukážu, ako na to.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" routerLink="/prva-navsteva-a-kontakt">
+          Prvá návšteva – Ako začať <span class="arrow">→</span>
+        </a>
+        <a class="btn btn--ghost-light" routerLink="/kurzy" [queryParams]="{ kategoria: 'zaciatocnici' }">
+          Kurzy pre začiatočníkov
+        </a>
+      </div>
+    </div>
+
+    <ul class="hero__highlights" role="list" aria-label="Čo u nás nájdeš">
+      @for (h of highlights; track h.label) {
+        <li>
+          <strong class="num">{{ h.value }}</strong>
+          <span>{{ h.label }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ROUTE-SETTING TICKER -->
+<div class="ticker" aria-label="Aktuálne">
+  <div class="container ticker__inner">
+    <span class="ticker__live"><span class="ticker__dot"></span>Prestavby</span>
+    <span>{{ site.facility.routeSettingNote }}</span>
+    <span class="ticker__grade num">{{ site.facility.gradeRange }}</span>
+  </div>
+</div>
+
+<!-- ZONES -->
+<section class="section" aria-labelledby="zones-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Stena & zóny</p>
+        <h2 id="zones-title">Naše lezecké zóny</h2>
+        <p class="lead">
+          Od 4,5-metrových boulderov nad mäkkými matracmi až po {{ site.facility.maxWallHeightM.toLocaleString('sk-SK') }}-metrové
+          steny s lanom. Každý si tu nájde svoju výzvu.
+        </p>
+      </div>
+      <a class="text-link" routerLink="/stena-a-zony">Prehliadka všetkých zón <span aria-hidden="true">→</span></a>
+    </div>
+
+    @if (listViewState(zones) === 'ready') {
+      <div class="zones-grid">
+        @for (zone of listValue(zones); track zone.id; let i = $index) {
+          <app-zone-card [zone]="zone" [showDescription]="i < 2" [wide]="i < 2" />
+        }
+      </div>
+    } @else {
+      <app-state-message [state]="listViewState(zones)" (retry)="zones.reload()" />
+    }
+  </div>
+</section>
+
+<!-- ESTIMATOR -->
+<section class="section section--limestone" id="kalkulacka" aria-labelledby="estimator-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Kalkulačka návštevy</p>
+      <h2 id="estimator-title">Koľko ťa bude stáť prvá návšteva?</h2>
+      <p class="lead">
+        Nastav, koľko vás príde, čo chcete liezť a či chcete inštruktora. Cenu aj zoznam vecí, ktoré si treba vziať,
+        uvidíš okamžite.
+      </p>
+    </div>
+    <app-visit-estimator idPrefix="home-est" />
+  </div>
+</section>
+
+<!-- FEATURED COURSES -->
+<section class="section" aria-labelledby="courses-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Kurzy & tréningy</p>
+        <h2 id="courses-title">Obľúbené kurzy a tréningy</h2>
+        <p class="lead">Malé skupiny, certifikovaní inštruktori a výstroj v cene. Vyber si, kde chceš začať.</p>
+      </div>
+      <a class="text-link" routerLink="/kurzy">Všetky kurzy a krúžky <span aria-hidden="true">→</span></a>
+    </div>
+
+    @if (listViewState(courses) === 'ready') {
+      <div class="grid grid--3">
+        @for (course of listValue(courses).slice(0, 6); track course.id) {
+          <app-course-card [course]="course" />
+        }
+      </div>
+    } @else {
+      <app-state-message [state]="listViewState(courses)" (retry)="courses.reload()" />
+    }
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section section--dark" aria-labelledby="why-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Prečo liezť u nás</p>
+      <h2 id="why-title">Miesto, kde sa lezenie stane tvojím obľúbeným športom</h2>
+    </div>
+    <ul class="pillars" role="list">
+      @for (p of pillars; track p.title; let i = $index) {
+        <li class="pillar">
+          <span class="pillar__icon"><app-icon [name]="p.icon" [size]="24" /></span>
+          <span class="pillar__index num">0{{ i + 1 }}</span>
+          <h3 class="pillar__title">{{ p.title }}</h3>
+          <p class="pillar__text">{{ p.text }}</p>
+        </li>
+      }
+    </ul>
+    <ul class="metrics" role="list">
+      @for (m of site.trustMetrics; track m.label) {
+        <li>
+          <strong class="num">{{ m.value }}</strong>
+          <span>{{ m.label }}</span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" aria-labelledby="team-title">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Náš tím</p>
+        <h2 id="team-title">Stavitelia ciest a inštruktori</h2>
+        <p class="lead">Ľudia, ktorí každý týždeň vymýšľajú nové cesty a učia stovky ľudí liezť bezpečne a s radosťou.</p>
+      </div>
+    </div>
+    @if (listViewState(team) === 'ready') {
+      <div class="grid grid--4">
+        @for (member of listValue(team); track member.id) {
+          <app-coach-card [member]="member" [showBio]="false" />
+        }
+      </div>
+    } @else {
+      <app-state-message [state]="listViewState(team)" [columns]="4" [count]="4" (retry)="team.reload()" />
+    }
+  </div>
+</section>
+
+<!-- GROUPS TEASER -->
+<section class="section section--limestone section--tight" aria-labelledby="groups-title">
+  <div class="container groups">
+    <div class="groups__text">
+      <p class="eyebrow">Akcie & firmy</p>
+      <h2 id="groups-title">Teambuilding, narodeniny alebo telesná pre celú triedu?</h2>
+      <p class="lead">
+        Pripravíme program na mieru s inštruktormi, výstrojou aj občerstvením v bistre. Pre 5 aj 120 ľudí.
+      </p>
+    </div>
+    <div class="groups__actions">
+      <a class="btn btn--primary" routerLink="/akcie-a-teambuilding">Nezáväzný dopyt na akciu <span class="arrow">→</span></a>
+      <a class="btn btn--outline" [href]="site.contact.phoneHref">
+        <app-icon name="phone" [size]="18" /> <span class="num">{{ site.contact.phone }}</span>
+      </a>
+    </div>
+  </div>
+</section>

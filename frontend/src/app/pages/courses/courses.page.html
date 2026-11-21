@@ -1,0 +1,105 @@
+<app-page-hero
+  eyebrow="Kurzy, krúžky a tréningy"
+  title="Nauč sa liezť s tými najlepšími"
+  crumb="Kurzy a krúžky"
+  lead="Od úplne prvých krokov na stene cez istenie na lane až po detské krúžky a večerné tréningy. Malé skupiny, certifikovaní inštruktori a výstroj väčšinou v cene."
+/>
+
+<section class="section section--tight" aria-label="Katalóg kurzov">
+  <div class="container">
+    <div class="filters">
+      <div class="tabs" role="tablist" aria-label="Cieľová skupina">
+        @for (f of categoryFilters; track f.label) {
+          <button
+            type="button"
+            role="tab"
+            class="tabs__tab"
+            [class.is-active]="category() === f.value"
+            [attr.aria-selected]="category() === f.value"
+            (click)="selectCategory(f.value)"
+          >
+            {{ f.label }}
+          </button>
+        }
+      </div>
+
+      <div class="filters__row">
+        <div class="field filters__search">
+          <label for="course-search" class="visually-hidden">Hľadať kurz</label>
+          <input
+            id="course-search"
+            type="search"
+            placeholder="Hľadať kurz, napr. „lano“ alebo „deti“"
+            [value]="searchInput()"
+            (input)="onSearch($event)"
+            autocomplete="off"
+          />
+        </div>
+        <div class="field">
+          <label for="course-level" class="visually-hidden">Úroveň</label>
+          <select id="course-level" (change)="onSkillChange($event)">
+            @for (o of skillOptions; track o.label) {
+              <option [value]="o.value ?? ''" [selected]="skillLevel() === o.value">{{ o.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="course-order" class="visually-hidden">Zoradiť</label>
+          <select id="course-order" (change)="onOrderingChange($event)">
+            @for (o of orderingOptions; track o.value) {
+              <option [value]="o.value" [selected]="ordering() === o.value">{{ o.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-meta" aria-live="polite">
+      @if (courses.hasValue()) {
+        <span
+          >Počet kurzov: <strong class="num">{{ listValue(courses).length }}</strong></span
+        >
+      }
+      @if (hasExtraFilters() || category()) {
+        <button type="button" class="reset" (click)="resetFilters()">Zrušiť filtre</button>
+      }
+    </div>
+
+    @switch (listViewState(courses)) {
+      @case ('ready') {
+        <div class="grid grid--3" [class.is-refreshing]="courses.isLoading()">
+          @for (course of listValue(courses); track course.id) {
+            <app-course-card [course]="course" />
+          }
+        </div>
+      }
+      @case ('empty') {
+        <app-state-message
+          state="empty"
+          emptyTitle="Takýto kurz zatiaľ nemáme."
+          emptyText="Skúste iný filter – alebo nám napíšte a pripravíme individuálny tréning na mieru."
+        >
+          <a class="btn btn--outline btn--sm" routerLink="/akcie-a-teambuilding">Individuálny tréning</a>
+        </app-state-message>
+      }
+      @default {
+        <app-state-message [state]="listViewState(courses)" (retry)="courses.reload()" />
+      }
+    }
+  </div>
+</section>
+
+<section class="section section--limestone section--tight" aria-labelledby="help-title">
+  <div class="container help">
+    <div>
+      <h2 id="help-title" class="h3">Neviete, ktorý kurz vybrať?</h2>
+      <p class="muted">
+        Ak ste nikdy neliezli, začnite úvodným kurzom <strong>Prvé kroky na stene</strong>. Radi poradíme aj
+        telefonicky.
+      </p>
+    </div>
+    <a class="btn btn--primary" routerLink="/prva-navsteva-a-kontakt" fragment="kontakt">
+      <app-icon name="mail" [size]="18" /> Opýtať sa inštruktora
+    </a>
+  </div>
+</section>

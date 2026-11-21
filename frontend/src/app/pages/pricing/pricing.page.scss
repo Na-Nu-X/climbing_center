@@ -1,0 +1,168 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  margin-top: $space-4;
+
+  &__link {
+    padding: $space-2 $space-4;
+    border: 1px solid rgba(249, 248, 246, 0.3);
+    border-radius: 999px;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition:
+      background $duration-fast ease,
+      color $duration-fast ease;
+
+    &:hover {
+      background: var(--color-on-dark);
+      color: var(--color-dark);
+    }
+
+    &--accent {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+    }
+  }
+}
+
+.price-groups {
+  display: grid;
+  gap: $space-5;
+
+  @include mq(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.price-group {
+  @include card;
+  overflow: hidden;
+
+  &__head {
+    display: grid;
+    gap: $space-2;
+    padding: $space-5;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-limestone);
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  tr + tr {
+    border-top: 1px solid var(--color-border);
+  }
+
+  th,
+  td {
+    padding: $space-4 $space-5;
+    vertical-align: top;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 400;
+  }
+
+  td {
+    text-align: right;
+    font-size: 1.15rem;
+    white-space: nowrap;
+  }
+
+  tr.is-popular {
+    background: var(--color-accent-tint);
+
+    td {
+      color: var(--color-accent-hover);
+    }
+  }
+
+  &__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $space-2;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  &__note {
+    display: block;
+    margin-top: $space-1;
+    font-size: 0.84rem;
+    color: var(--color-text-muted);
+  }
+}
+
+.notes {
+  display: grid;
+  gap: $space-4;
+  margin-top: $space-7;
+
+  @include mq(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  li {
+    display: flex;
+    gap: $space-3;
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+
+    app-icon {
+      color: var(--color-success);
+      margin-top: 1px;
+    }
+
+    strong {
+      color: var(--color-text);
+    }
+  }
+}
+
+.upsell {
+  display: grid;
+  gap: $space-5;
+
+  @include mq(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__card {
+    @include card;
+    display: grid;
+    gap: $space-3;
+    padding: $space-6;
+    text-decoration: none;
+    transition:
+      border-color $duration-base ease,
+      transform $duration-base $ease-out;
+
+    strong {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      line-height: 1.2;
+    }
+
+    .text-link {
+      justify-self: start;
+    }
+
+    &:hover {
+      border-color: var(--color-dark);
+      transform: translateY(-2px);
+    }
+  }
+}

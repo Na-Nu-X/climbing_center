@@ -1,0 +1,110 @@
+<app-page-hero
+  eyebrow="Cenník"
+  title="Férové ceny. Žiadne skryté poplatky."
+  crumb="Cenník"
+  lead="Vstup platí celý deň do všetkých lezeckých zón. Bez rezervácie – stačí prísť, zaplatiť na recepcii a ide sa liezť."
+>
+  <nav class="jump" aria-label="Kategórie cenníka">
+    @for (g of groups(); track g.value) {
+      <a routerLink="/cennik" [fragment]="g.value" class="jump__link">{{ g.label }}</a>
+    }
+    <a routerLink="/cennik" fragment="kalkulacka" class="jump__link jump__link--accent">Kalkulačka návštevy</a>
+  </nav>
+</app-page-hero>
+
+<section class="section" aria-label="Cenník">
+  <div class="container">
+    @if (state() === 'ready') {
+      <div class="price-groups">
+        @for (g of groups(); track g.value) {
+          <section class="price-group" [id]="g.value" [attr.aria-labelledby]="g.value + '-title'">
+            <header class="price-group__head">
+              <h2 class="h3" [id]="g.value + '-title'">{{ g.label }}</h2>
+              <p class="muted">{{ g.intro }}</p>
+            </header>
+            <table class="price-table">
+              <caption class="visually-hidden">{{ g.label }}</caption>
+              <thead class="visually-hidden">
+                <tr>
+                  <th scope="col">Položka</th>
+                  <th scope="col">Cena</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of g.items; track item.id) {
+                  <tr [class.is-popular]="item.is_popular">
+                    <th scope="row">
+                      <span class="price-table__title">
+                        {{ item.title }}
+                        @if (item.is_popular) {
+                          <span class="badge badge--accent">Najobľúbenejšie</span>
+                        }
+                      </span>
+                      @if (item.subtitle_note) {
+                        <span class="price-table__note">{{ item.subtitle_note }}</span>
+                      }
+                    </th>
+                    <td class="price">{{ item.price_eur | eur }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </section>
+        }
+      </div>
+    } @else {
+      <app-state-message [state]="state()" [columns]="3" [count]="3" [height]="320" (retry)="retry()" />
+    }
+
+    <ul class="notes" role="list">
+      <li>
+        <app-icon name="shield" [size]="20" />
+        <span
+          ><strong>Prvá návšteva:</strong> pred vstupom vyplníš krátke prehlásenie a absolvuješ bezplatnú
+          bezpečnostnú inštruktáž (cca 5 minút).</span
+        >
+      </li>
+      <li>
+        <app-icon name="users" [size]="20" />
+        <span
+          ><strong>Študentská zľava</strong> platí pre študentov a juniorov do 26 rokov s platným preukazom (ISIC,
+          EURO&lt;26).</span
+        >
+      </li>
+      <li>
+        <app-icon name="star" [size]="20" />
+        <span
+          ><strong>Permanentky</strong> sú prenosné a platia 6 mesiacov. Darčekové poukážky kúpiš na recepcii.</span
+        >
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--limestone" id="kalkulacka" aria-labelledby="calc-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Kalkulačka návštevy</p>
+      <h2 id="calc-title">Spočítaj si návštevu na euro presne</h2>
+      <p class="lead">
+        Vyber počet lezcov, požičovňu a či chceš inštruktora. Ukážeme ti aj to, kedy sa oplatí permanentka.
+      </p>
+    </div>
+    <app-visit-estimator [showPricingLink]="false" idPrefix="pricing-est" />
+  </div>
+</section>
+
+<section class="section section--tight" aria-label="Kurzy a skupiny">
+  <div class="container upsell">
+    <a class="upsell__card" routerLink="/kurzy">
+      <span class="eyebrow">Kurzy</span>
+      <strong>Kurzy pre začiatočníkov, lano aj detské krúžky</strong>
+      <span class="text-link">Pozrieť kurzy <span aria-hidden="true">→</span></span>
+    </a>
+    <a class="upsell__card" routerLink="/akcie-a-teambuilding">
+      <span class="eyebrow">Skupiny</span>
+      <strong>Teambuildingy, oslavy a školy so zvýhodnenou cenou</strong>
+      <span class="text-link">Poslať dopyt <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+</section>
