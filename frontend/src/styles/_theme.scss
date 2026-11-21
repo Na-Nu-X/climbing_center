@@ -1,0 +1,38 @@
+@use 'variables' as *;
+
+// Runtime theme: every component reads colors from these custom properties,
+// so a client rebrand only needs new values here (or a :root override).
+:root {
+  --color-bg: #{$color-chalk};
+  --color-limestone: #{$color-limestone};
+  --color-surface: #{$color-white};
+  --color-border: #{$color-border};
+  --color-border-strong: #c9c4b8;
+  --color-dark: #{$color-granite};
+  --color-dark-raised: #{$color-granite-soft};
+  --color-on-dark: #{$color-chalk};
+  --color-on-dark-muted: #a9adb5;
+  --color-text: #{$color-granite};
+  --color-text-muted: #{$color-text-muted};
+  --color-accent: #{$color-terracotta};
+  --color-accent-hover: #{$color-terracotta-hover};
+  --color-accent-tint: #{$color-terracotta-tint};
+  --color-on-accent: #ffffff;
+  --color-success: #{$color-emerald};
+  --color-success-tint: #{$color-emerald-tint};
+  --color-danger: #{$color-danger};
+  --color-danger-tint: #{$color-danger-tint};
+
+  --font-display: #{$font-display};
+  --font-body: #{$font-body};
+  --font-mono: #{$font-mono};
+
+  --radius-sm: #{$radius-sm};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --header-height: #{$header-height};
+
+  --shadow-lift: 0 18px 40px -24px rgba(20, 23, 28, 0.35);
+
+  color-scheme: light;
+}
